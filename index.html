@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ContactBook — Sign In</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:       #0f1117;
+    --surface:  #181c27;
+    --border:   #272d3f;
+    --accent:   #4f8ef7;
+    --accent2:  #7c5cfc;
+    --text:     #e8eaf0;
+    --muted:    #6b7280;
+    --error:    #f87171;
+    --success:  #34d399;
+    --radius:   12px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+  }
+  /* animated gradient orb behind the card */
+  body::before {
+    content: '';
+    position: fixed;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(79,142,247,0.12) 0%, transparent 70%);
+    top: -100px; left: -100px;
+    pointer-events: none;
+    animation: drift 8s ease-in-out infinite alternate;
+  }
+  body::after {
+    content: '';
+    position: fixed;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(124,92,252,0.1) 0%, transparent 70%);
+    bottom: -80px; right: -80px;
+    pointer-events: none;
+    animation: drift 11s ease-in-out infinite alternate-reverse;
+  }
+  @keyframes drift { to { transform: translate(40px, 30px); } }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 2.5rem 2rem;
+    width: 100%;
+    max-width: 420px;
+    position: relative;
+    z-index: 1;
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 2rem;
+  }
+  .logo-icon {
+    width: 40px; height: 40px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem;
+  }
+  .logo-name {
+    font-size: 1.2rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+  h1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    margin-bottom: 0.4rem;
+  }
+  .subtitle {
+    font-size: 0.88rem;
+    color: var(--muted);
+    margin-bottom: 2rem;
+    line-height: 1.5;
+  }
+  label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+  input[type="email"] {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    margin-bottom: 1.25rem;
+  }
+  input[type="email"]:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(79,142,247,0.15);
+  }
+  input[type="email"].error-input { border-color: var(--error); }
+
+  .btn-primary {
+    width: 100%;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border: none;
+    border-radius: 8px;
+    padding: 0.8rem;
+    color: #fff;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.15s;
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-primary:hover { opacity: 0.92; transform: translateY(-1px); }
+  .btn-primary:active { transform: translateY(0); }
+  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .msg {
+    margin-top: 1rem;
+    padding: 0.7rem 1rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    display: none;
+  }
+  .msg.error   { background: rgba(248,113,113,0.1); color: var(--error);   border: 1px solid rgba(248,113,113,0.3); display: block; }
+  .msg.success { background: rgba(52,211,153,0.1);  color: var(--success); border: 1px solid rgba(52,211,153,0.3);  display: block; }
+
+  .spinner {
+    display: inline-block;
+    width: 14px; height: 14px;
+    border: 2px solid rgba(255,255,255,0.4);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+    vertical-align: middle;
+    margin-right: 6px;
+    display: none;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">
+    <div class="logo-icon">📒</div>
+    <span class="logo-name">ContactBook</span>
+  </div>
+  <h1>Welcome back</h1>
+  <p class="subtitle">Enter your API key (email address) to access your contacts.</p>
+
+  <label for="apiKey">API Key</label>
+  <input type="email" id="apiKey" placeholder="you@example.com" autocomplete="email">
+
+  <button class="btn-primary" id="submitBtn">
+    <span class="spinner" id="spinner"></span>
+    <span id="btnText">Sign in</span>
+  </button>
+  <div class="msg" id="msg"></div>
+</div>
+
+<script>
+  const rootPath = "https://mysite.itvarsity.org/api/ContactBook/";
+
+  document.getElementById("submitBtn").addEventListener("click", setApiKey);
+  document.getElementById("apiKey").addEventListener("keydown", e => { if (e.key === "Enter") setApiKey(); });
+
+  function setApiKey() {
+    const input = document.getElementById("apiKey");
+    const btn   = document.getElementById("submitBtn");
+    const spinner = document.getElementById("spinner");
+    const btnText = document.getElementById("btnText");
+    const msg   = document.getElementById("msg");
+
+    const key = input.value.trim();
+    msg.className = "msg";
+    msg.textContent = "";
+
+    if (!key) {
+      input.classList.add("error-input");
+      msg.textContent = "Please enter your API key.";
+      msg.classList.add("error");
+      return;
+    }
+    input.classList.remove("error-input");
+
+    btn.disabled = true;
+    spinner.style.display = "inline-block";
+    btnText.textContent = "Verifying…";
+
+    fetch(rootPath + "controller/api-key/?apiKey=" + encodeURIComponent(key))
+      .then(r => r.text())
+      .then(data => {
+        if (data.trim() === "1") {
+          localStorage.setItem("apiKey", key);
+          msg.textContent = "✓ Key accepted — loading your contacts…";
+          msg.classList.add("success");
+          setTimeout(() => window.location.href = "index.html", 800);
+        } else {
+          msg.textContent = "Invalid API key. Check the email address and try again.";
+          msg.classList.add("error");
+          input.classList.add("error-input");
+          btn.disabled = false;
+          spinner.style.display = "none";
+          btnText.textContent = "Sign in";
+        }
+      })
+      .catch(() => {
+        msg.textContent = "Could not reach the server. Check your connection and try again.";
+        msg.classList.add("error");
+        btn.disabled = false;
+        spinner.style.display = "none";
+        btnText.textContent = "Sign in";
+      });
+  }
+</script>
+</body>
+</html>
