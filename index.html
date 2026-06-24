@@ -1,239 +1,382 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ContactBook — Sign In</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+
 <style>
-  :root {
-    --bg:       #0f1117;
-    --surface:  #181c27;
-    --border:   #272d3f;
-    --accent:   #4f8ef7;
-    --accent2:  #7c5cfc;
-    --text:     #e8eaf0;
-    --muted:    #6b7280;
-    --error:    #f87171;
-    --success:  #34d399;
-    --radius:   12px;
-  }
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 1.5rem;
-  }
-  /* animated gradient orb behind the card */
-  body::before {
-    content: '';
-    position: fixed;
-    width: 500px; height: 500px;
-    background: radial-gradient(circle, rgba(79,142,247,0.12) 0%, transparent 70%);
-    top: -100px; left: -100px;
-    pointer-events: none;
-    animation: drift 8s ease-in-out infinite alternate;
-  }
-  body::after {
-    content: '';
-    position: fixed;
-    width: 400px; height: 400px;
-    background: radial-gradient(circle, rgba(124,92,252,0.1) 0%, transparent 70%);
-    bottom: -80px; right: -80px;
-    pointer-events: none;
-    animation: drift 11s ease-in-out infinite alternate-reverse;
-  }
-  @keyframes drift { to { transform: translate(40px, 30px); } }
-
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 2.5rem 2rem;
-    width: 100%;
-    max-width: 420px;
-    position: relative;
-    z-index: 1;
-  }
-  .logo {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    margin-bottom: 2rem;
-  }
-  .logo-icon {
-    width: 40px; height: 40px;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    border-radius: 10px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.2rem;
-  }
-  .logo-name {
-    font-size: 1.2rem;
-    font-weight: 600;
-    letter-spacing: -0.02em;
-  }
-  h1 {
-    font-size: 1.5rem;
-    font-weight: 600;
-    letter-spacing: -0.03em;
-    margin-bottom: 0.4rem;
-  }
-  .subtitle {
-    font-size: 0.88rem;
-    color: var(--muted);
-    margin-bottom: 2rem;
-    line-height: 1.5;
-  }
-  label {
-    display: block;
-    font-size: 0.8rem;
-    font-weight: 500;
-    color: var(--muted);
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    margin-bottom: 0.5rem;
-  }
-  input[type="email"] {
-    width: 100%;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 0.75rem 1rem;
-    color: var(--text);
-    font-family: 'DM Mono', monospace;
-    font-size: 0.9rem;
-    outline: none;
-    transition: border-color 0.2s, box-shadow 0.2s;
-    margin-bottom: 1.25rem;
-  }
-  input[type="email"]:focus {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(79,142,247,0.15);
-  }
-  input[type="email"].error-input { border-color: var(--error); }
-
-  .btn-primary {
-    width: 100%;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    border: none;
-    border-radius: 8px;
-    padding: 0.8rem;
-    color: #fff;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.95rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: opacity 0.2s, transform 0.15s;
-    position: relative;
-    overflow: hidden;
-  }
-  .btn-primary:hover { opacity: 0.92; transform: translateY(-1px); }
-  .btn-primary:active { transform: translateY(0); }
-  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
-
-  .msg {
-    margin-top: 1rem;
-    padding: 0.7rem 1rem;
-    border-radius: 8px;
-    font-size: 0.85rem;
-    display: none;
-  }
-  .msg.error   { background: rgba(248,113,113,0.1); color: var(--error);   border: 1px solid rgba(248,113,113,0.3); display: block; }
-  .msg.success { background: rgba(52,211,153,0.1);  color: var(--success); border: 1px solid rgba(52,211,153,0.3);  display: block; }
-
-  .spinner {
-    display: inline-block;
-    width: 14px; height: 14px;
-    border: 2px solid rgba(255,255,255,0.4);
-    border-top-color: #fff;
-    border-radius: 50%;
-    animation: spin 0.6s linear infinite;
-    vertical-align: middle;
-    margin-right: 6px;
-    display: none;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans);background:var(--color-background-tertiary)}
+.app{max-width:900px;margin:0 auto;padding:16px}
+.top-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.app-title{font-size:22px;font-weight:500;color:var(--color-text-primary)}
+.app-title span{color:#185FA5}
+.btn-add{display:flex;align-items:center;gap:6px;background:#185FA5;color:#fff;border:none;border-radius:var(--border-radius-md);padding:9px 16px;font-size:14px;font-weight:500;cursor:pointer;transition:background 0.15s}
+.btn-add:hover{background:#0C447C}
+.search-bar{position:relative;margin-bottom:20px}
+.search-bar input{width:100%;height:44px;border-radius:var(--border-radius-lg);border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);padding:0 16px 0 44px;font-size:15px;color:var(--color-text-primary);outline:none;transition:border-color 0.15s}
+.search-bar input:focus{border-color:#185FA5;box-shadow:0 0 0 3px rgba(24,95,165,0.12)}
+.search-bar .si{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--color-text-secondary);font-size:18px;pointer-events:none}
+.filter-tabs{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.tab{padding:6px 14px;border-radius:20px;font-size:13px;font-weight:500;border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-secondary);cursor:pointer;transition:all 0.15s}
+.tab.active{background:#185FA5;color:#fff;border-color:#185FA5}
+.contacts-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
+.contact-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:18px 16px 14px;cursor:pointer;transition:border-color 0.15s,transform 0.1s;position:relative}
+.contact-card:hover{border-color:var(--color-border-secondary);transform:translateY(-1px)}
+.contact-card.fav .fav-star{color:#EF9F27}
+.fav-star{position:absolute;top:14px;right:14px;font-size:16px;color:var(--color-border-secondary);background:none;border:none;cursor:pointer;transition:color 0.15s}
+.avatar-wrap{display:flex;justify-content:center;margin-bottom:12px}
+.avatar{width:68px;height:68px;border-radius:50%;object-fit:cover;border:2px solid var(--color-border-tertiary)}
+.avatar-initials{width:68px;height:68px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:500;flex-shrink:0}
+.card-name{font-size:15px;font-weight:500;color:var(--color-text-primary);text-align:center;margin-bottom:2px}
+.card-role{font-size:12px;color:var(--color-text-secondary);text-align:center;margin-bottom:10px}
+.card-chips{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
+.chip{display:flex;align-items:center;gap:4px;font-size:11px;padding:3px 9px;border-radius:20px;background:var(--color-background-secondary);color:var(--color-text-secondary);border:0.5px solid var(--color-border-tertiary)}
+.chip i{font-size:13px}
+.empty-state{text-align:center;padding:60px 20px;color:var(--color-text-secondary)}
+.empty-state i{font-size:48px;margin-bottom:12px;display:block}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.45);display:flex;align-items:center;justify-content:center;z-index:100;padding:16px}
+.modal{background:var(--color-background-primary);border-radius:var(--border-radius-xl);width:100%;max-width:480px;max-height:90vh;overflow-y:auto;border:0.5px solid var(--color-border-secondary)}
+.modal-header{display:flex;align-items:center;justify-content:space-between;padding:20px 20px 0}
+.modal-header h2{font-size:17px;font-weight:500;color:var(--color-text-primary)}
+.modal-close{background:none;border:none;cursor:pointer;color:var(--color-text-secondary);font-size:20px;line-height:1}
+.modal-body{padding:20px}
+.photo-upload-area{display:flex;flex-direction:column;align-items:center;margin-bottom:24px}
+.photo-circle{width:96px;height:96px;border-radius:50%;border:2px dashed var(--color-border-secondary);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;overflow:hidden;transition:border-color 0.15s;background:var(--color-background-secondary)}
+.photo-circle:hover{border-color:#185FA5}
+.photo-circle img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.photo-circle .camera-icon{font-size:28px;color:var(--color-text-secondary)}
+.photo-label{margin-top:8px;font-size:12px;color:var(--color-text-secondary)}
+.form-section{margin-bottom:20px}
+.form-section-title{font-size:11px;font-weight:500;color:#185FA5;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.form-section-title i{font-size:14px}
+.form-row{display:flex;gap:10px}
+.form-field{flex:1;margin-bottom:12px}
+.form-field label{display:block;font-size:12px;color:var(--color-text-secondary);margin-bottom:5px;font-weight:500}
+.form-field input,.form-field select,.form-field textarea{width:100%;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);padding:10px 12px;font-size:14px;color:var(--color-text-primary);background:var(--color-background-primary);outline:none;transition:border-color 0.15s;font-family:var(--font-sans)}
+.form-field input:focus,.form-field select:focus,.form-field textarea:focus{border-color:#185FA5;box-shadow:0 0 0 3px rgba(24,95,165,0.1)}
+.form-field textarea{resize:vertical;min-height:72px}
+.input-icon-wrap{position:relative}
+.input-icon-wrap input{padding-left:36px}
+.input-icon-wrap .fi{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--color-text-secondary);font-size:16px;pointer-events:none}
+.phone-row{display:flex;gap:8px;align-items:flex-end;margin-bottom:8px}
+.phone-row .form-field{margin-bottom:0}
+.btn-add-field{display:flex;align-items:center;gap:5px;font-size:12px;color:#185FA5;background:none;border:none;cursor:pointer;padding:0;font-weight:500}
+.btn-add-field:hover{opacity:0.7}
+.btn-remove{background:none;border:none;cursor:pointer;color:var(--color-text-secondary);font-size:18px;padding:0 4px;line-height:1;flex-shrink:0;align-self:center;margin-bottom:0}
+.modal-footer{display:flex;gap:10px;padding:0 20px 20px;margin-top:4px}
+.btn-cancel{flex:1;padding:11px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:none;font-size:14px;color:var(--color-text-secondary);cursor:pointer;font-weight:500}
+.btn-save{flex:2;padding:11px;background:#185FA5;color:#fff;border:none;border-radius:var(--border-radius-md);font-size:14px;font-weight:500;cursor:pointer;transition:background 0.15s}
+.btn-save:hover{background:#0C447C}
+.detail-modal{max-width:420px}
+.detail-header{padding:28px 24px 20px;display:flex;flex-direction:column;align-items:center;border-bottom:0.5px solid var(--color-border-tertiary)}
+.detail-actions{display:flex;gap:10px;margin-top:16px}
+.da-btn{display:flex;align-items:center;gap:6px;padding:8px 16px;border-radius:var(--border-radius-md);font-size:13px;font-weight:500;cursor:pointer;border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-secondary);transition:all 0.15s}
+.da-btn:hover{background:var(--color-background-secondary)}
+.da-btn.call{background:#185FA5;color:#fff;border-color:#185FA5}
+.da-btn.call:hover{background:#0C447C}
+.detail-section{padding:16px 20px 0}
+.detail-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:0.5px solid var(--color-border-tertiary)}
+.detail-row:last-child{border-bottom:none}
+.detail-icon{width:36px;height:36px;border-radius:50%;background:var(--color-background-secondary);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.detail-icon i{font-size:17px;color:#185FA5}
+.detail-label{font-size:11px;color:var(--color-text-secondary)}
+.detail-value{font-size:14px;color:var(--color-text-primary);font-weight:500}
+.detail-footer{display:flex;gap:10px;padding:16px 20px 20px;margin-top:8px}
+.btn-edit{flex:1;padding:11px;background:var(--color-background-secondary);border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);font-size:14px;color:var(--color-text-primary);cursor:pointer;font-weight:500;display:flex;align-items:center;justify-content:center;gap:6px}
+.btn-delete{padding:11px 18px;background:none;border:0.5px solid var(--color-border-danger);border-radius:var(--border-radius-md);font-size:14px;color:var(--color-text-danger);cursor:pointer;font-weight:500;display:flex;align-items:center;gap:6px}
+.count-badge{font-size:12px;color:var(--color-text-secondary);margin-left:auto}
+.avatar-big{width:80px;height:80px;border-radius:50%;object-fit:cover}
+.avatar-big-initials{width:80px;height:80px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:500}
 </style>
-</head>
-<body>
-<div class="card">
-  <div class="logo">
-    <div class="logo-icon">📒</div>
-    <span class="logo-name">ContactBook</span>
+<h2 class="sr-only">Contact Book — manage your contacts with photo, phone, and email</h2>
+
+<div class="app" id="app">
+  <div class="top-bar">
+    <div class="app-title"><span>Contact</span> Book</div>
+    <button class="btn-add" onclick="openAddModal()"><i class="ti ti-plus" aria-hidden="true"></i> New contact</button>
   </div>
-  <h1>Welcome back</h1>
-  <p class="subtitle">Enter your API key (email address) to access your contacts.</p>
+  <div class="search-bar">
+    <i class="ti ti-search si" aria-hidden="true"></i>
+    <input type="text" id="searchInput" placeholder="Search by name, phone, or email…" oninput="renderContacts()" autocomplete="off">
+  </div>
+  <div class="filter-tabs" id="filterTabs"></div>
+  <div id="contactsGrid" class="contacts-grid"></div>
+</div>
 
-  <label for="apiKey">API Key</label>
-  <input type="email" id="apiKey" placeholder="you@example.com" autocomplete="email">
-
-  <button class="btn-primary" id="submitBtn">
-    <span class="spinner" id="spinner"></span>
-    <span id="btnText">Sign in</span>
-  </button>
-  <div class="msg" id="msg"></div>
+<div id="modal" class="modal-bg" style="display:none" onclick="if(event.target===this)closeModal()">
+  <div class="modal" id="modalBox"></div>
 </div>
 
 <script>
-  const rootPath = "https://mysite.itvarsity.org/api/ContactBook/";
+const COLORS=[
+  {bg:'#E6F1FB',text:'#0C447C'},{bg:'#E1F5EE',text:'#085041'},
+  {bg:'#FBEAF0',text:'#72243E'},{bg:'#EEEDFE',text:'#3C3489'},
+  {bg:'#FAECE7',text:'#712B13'},{bg:'#FAEEDA',text:'#633806'},
+  {bg:'#EAF3DE',text:'#27500A'},{bg:'#FCEBEB',text:'#791F1F'}
+];
+function colorFor(name){
+  let h=0;for(let c of name)h=(h*31+c.charCodeAt(0))&0xffff;
+  return COLORS[h%COLORS.length];
+}
+function initials(name){return name.split(' ').slice(0,2).map(w=>w[0]||'').join('').toUpperCase();}
 
-  document.getElementById("submitBtn").addEventListener("click", setApiKey);
-  document.getElementById("apiKey").addEventListener("keydown", e => { if (e.key === "Enter") setApiKey(); });
+let contacts=[
+  {id:1,name:'Sipho Dlamini',role:'Software Engineer',phones:[{type:'mobile',num:'+27 82 345 6789'}],emails:[{addr:'sipho@gmail.com'}],company:'TechZA',birthday:'1992-03-15',notes:'Loves hiking',fav:true,photo:''},
+  {id:2,name:'Ayasha Naidoo',role:'Designer',phones:[{type:'work',num:'+27 31 556 7890'}],emails:[{addr:'ayasha@studio.co.za'}],company:'Studio Natal',birthday:'',notes:'',fav:false,photo:''},
+  {id:3,name:'Themba Khumalo',role:'Product Manager',phones:[{type:'mobile',num:'+27 72 111 2233'}],emails:[{addr:'themba@pm.co.za'}],company:'FinTech SA',birthday:'',notes:'',fav:true,photo:''},
+  {id:4,name:'Priya Pillay',role:'Accountant',phones:[{type:'home',num:'+27 83 987 6543'}],emails:[{addr:'priya.pillay@mail.com'}],company:'Durban Accounts',birthday:'1988-11-02',notes:'',fav:false,photo:''},
+];
+let nextId=10;
+let activeFilter='all';
+let editingId=null;
+let formPhones=[{type:'mobile',num:''}];
+let formEmails=[{addr:''}];
+let photoDraft='';
 
-  function setApiKey() {
-    const input = document.getElementById("apiKey");
-    const btn   = document.getElementById("submitBtn");
-    const spinner = document.getElementById("spinner");
-    const btnText = document.getElementById("btnText");
-    const msg   = document.getElementById("msg");
-
-    const key = input.value.trim();
-    msg.className = "msg";
-    msg.textContent = "";
-
-    if (!key) {
-      input.classList.add("error-input");
-      msg.textContent = "Please enter your API key.";
-      msg.classList.add("error");
-      return;
+function getFiltered(){
+  const q=document.getElementById('searchInput').value.toLowerCase().trim();
+  return contacts.filter(c=>{
+    if(activeFilter==='fav'&&!c.fav)return false;
+    if(activeFilter!=='all'&&activeFilter!=='fav'){
+      const letter=activeFilter;
+      if(!c.name.toLowerCase().startsWith(letter))return false;
     }
-    input.classList.remove("error-input");
+    if(!q)return true;
+    return c.name.toLowerCase().includes(q)||
+      c.phones.some(p=>p.num.includes(q))||
+      c.emails.some(e=>e.addr.toLowerCase().includes(q))||
+      (c.company||'').toLowerCase().includes(q);
+  }).sort((a,b)=>a.name.localeCompare(b.name));
+}
 
-    btn.disabled = true;
-    spinner.style.display = "inline-block";
-    btnText.textContent = "Verifying…";
-
-    fetch(rootPath + "controller/api-key/?apiKey=" + encodeURIComponent(key))
-      .then(r => r.text())
-      .then(data => {
-        if (data.trim() === "1") {
-          localStorage.setItem("apiKey", key);
-          msg.textContent = "✓ Key accepted — loading your contacts…";
-          msg.classList.add("success");
-          setTimeout(() => window.location.href = "index.html", 800);
-        } else {
-          msg.textContent = "Invalid API key. Check the email address and try again.";
-          msg.classList.add("error");
-          input.classList.add("error-input");
-          btn.disabled = false;
-          spinner.style.display = "none";
-          btnText.textContent = "Sign in";
-        }
-      })
-      .catch(() => {
-        msg.textContent = "Could not reach the server. Check your connection and try again.";
-        msg.classList.add("error");
-        btn.disabled = false;
-        spinner.style.display = "none";
-        btnText.textContent = "Sign in";
-      });
+function renderContacts(){
+  const grid=document.getElementById('contactsGrid');
+  const list=getFiltered();
+  if(!list.length){
+    grid.innerHTML=`<div class="empty-state" style="grid-column:1/-1"><i class="ti ti-address-book" aria-hidden="true"></i><p style="font-size:15px;font-weight:500;margin-bottom:4px">No contacts found</p><p style="font-size:13px">Try a different search or add a new contact</p></div>`;
+    return;
   }
+  grid.innerHTML=list.map(c=>{
+    const col=colorFor(c.name);
+    const av=c.photo?`<img class="avatar" src="${c.photo}" alt="${c.name}">`:`<div class="avatar-initials" style="background:${col.bg};color:${col.text}">${initials(c.name)}</div>`;
+    const ph=c.phones[0]?`<div class="chip"><i class="ti ti-phone" aria-hidden="true"></i>${c.phones[0].num}</div>`:'';
+    const em=c.emails[0]?`<div class="chip"><i class="ti ti-mail" aria-hidden="true"></i>${c.emails[0].addr}</div>`:'';
+    return`<div class="contact-card${c.fav?' fav':''}" onclick="openDetail(${c.id})">
+      <button class="fav-star" onclick="event.stopPropagation();toggleFav(${c.id})" aria-label="${c.fav?'Remove from favourites':'Add to favourites'}"><i class="ti ti-star${c.fav?'-filled':''}" aria-hidden="true"></i></button>
+      <div class="avatar-wrap">${av}</div>
+      <div class="card-name">${c.name}</div>
+      <div class="card-role">${[c.role,c.company].filter(Boolean).join(' · ')}</div>
+      <div class="card-chips">${ph}${em}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderTabs(){
+  const letters=[...new Set(contacts.map(c=>c.name[0].toLowerCase()))].sort();
+  const tabs=document.getElementById('filterTabs');
+  const all=contacts.length;
+  const favs=contacts.filter(c=>c.fav).length;
+  tabs.innerHTML=`<button class="tab${activeFilter==='all'?' active':''}" onclick="setFilter('all')">All <span class="count-badge">${all}</span></button>
+  <button class="tab${activeFilter==='fav'?' active':''}" onclick="setFilter('fav')"><i class="ti ti-star" aria-hidden="true"></i> Favourites <span class="count-badge">${favs}</span></button>
+  `+letters.map(l=>`<button class="tab${activeFilter===l?' active':''}" onclick="setFilter('${l}')">${l.toUpperCase()}</button>`).join('');
+}
+
+function setFilter(f){activeFilter=f;renderTabs();renderContacts();}
+function toggleFav(id){const c=contacts.find(x=>x.id===id);if(c){c.fav=!c.fav;renderTabs();renderContacts();}}
+
+function openDetail(id){
+  const c=contacts.find(x=>x.id===id);if(!c)return;
+  const col=colorFor(c.name);
+  const av=c.photo?`<img class="avatar-big" src="${c.photo}" alt="${c.name}">`:`<div class="avatar-big-initials" style="background:${col.bg};color:${col.text}">${initials(c.name)}</div>`;
+  const phoneRows=c.phones.map(p=>`<div class="detail-row"><div class="detail-icon"><i class="ti ti-phone" aria-hidden="true"></i></div><div><div class="detail-label">${p.type}</div><div class="detail-value">${p.num}</div></div></div>`).join('');
+  const emailRows=c.emails.map(e=>`<div class="detail-row"><div class="detail-icon"><i class="ti ti-mail" aria-hidden="true"></i></div><div><div class="detail-label">email</div><div class="detail-value">${e.addr}</div></div></div>`).join('');
+  const compRow=c.company?`<div class="detail-row"><div class="detail-icon"><i class="ti ti-building" aria-hidden="true"></i></div><div><div class="detail-label">company</div><div class="detail-value">${c.company}</div></div></div>`:'';
+  const bdRow=c.birthday?`<div class="detail-row"><div class="detail-icon"><i class="ti ti-cake" aria-hidden="true"></i></div><div><div class="detail-label">birthday</div><div class="detail-value">${c.birthday}</div></div></div>`:'';
+  const noteRow=c.notes?`<div class="detail-row"><div class="detail-icon"><i class="ti ti-note" aria-hidden="true"></i></div><div><div class="detail-label">notes</div><div class="detail-value">${c.notes}</div></div></div>`:'';
+  document.getElementById('modalBox').innerHTML=`
+  <div class="detail-modal">
+    <div class="modal-header">
+      <span></span>
+      <button class="modal-close" onclick="closeModal()" aria-label="Close"><i class="ti ti-x" aria-hidden="true"></i></button>
+    </div>
+    <div class="detail-header">
+      ${av}
+      <div style="text-align:center;margin-top:12px">
+        <div style="font-size:19px;font-weight:500;color:var(--color-text-primary)">${c.name}</div>
+        <div style="font-size:13px;color:var(--color-text-secondary);margin-top:2px">${[c.role,c.company].filter(Boolean).join(' · ')}</div>
+      </div>
+      <div class="detail-actions">
+        ${c.phones[0]?`<button class="da-btn call" onclick="closeModal()"><i class="ti ti-phone" aria-hidden="true"></i> Call</button>`:''}
+        ${c.emails[0]?`<button class="da-btn" onclick="closeModal()"><i class="ti ti-mail" aria-hidden="true"></i> Email</button>`:''}
+        <button class="da-btn" onclick="toggleFav(${c.id});openDetail(${c.id})"><i class="ti ti-star${c.fav?'-filled':''}" aria-hidden="true"></i></button>
+      </div>
+    </div>
+    <div class="detail-section">${phoneRows}${emailRows}${compRow}${bdRow}${noteRow}</div>
+    <div class="detail-footer">
+      <button class="btn-edit" onclick="openEditModal(${c.id})"><i class="ti ti-edit" aria-hidden="true"></i> Edit contact</button>
+      <button class="btn-delete" onclick="deleteContact(${c.id})" aria-label="Delete contact"><i class="ti ti-trash" aria-hidden="true"></i></button>
+    </div>
+  </div>`;
+  document.getElementById('modal').style.display='flex';
+}
+
+function deleteContact(id){
+  contacts=contacts.filter(c=>c.id!==id);
+  closeModal();renderTabs();renderContacts();
+}
+
+function openAddModal(){editingId=null;formPhones=[{type:'mobile',num:''}];formEmails=[{addr:''}];photoDraft='';buildFormModal();}
+function openEditModal(id){
+  const c=contacts.find(x=>x.id===id);if(!c)return;
+  editingId=id;
+  formPhones=c.phones.length?c.phones.map(p=>({...p})):[{type:'mobile',num:''}];
+  formEmails=c.emails.length?c.emails.map(e=>({...e})):[{addr:''}];
+  photoDraft=c.photo||'';
+  buildFormModal(c);
+}
+
+function buildFormModal(c=null){
+  const title=c?'Edit contact':'New contact';
+  const pRows=formPhones.map((p,i)=>`<div class="phone-row" id="phoneRow${i}">
+    <div class="form-field" style="flex:0 0 90px">
+      <label>Type</label>
+      <select onchange="formPhones[${i}].type=this.value" style="padding:10px 8px">
+        ${['mobile','home','work','other'].map(t=>`<option${p.type===t?' selected':''}>${t}</option>`).join('')}
+      </select>
+    </div>
+    <div class="form-field">
+      <label>Number</label>
+      <div class="input-icon-wrap"><i class="ti ti-phone fi" aria-hidden="true"></i>
+        <input type="tel" value="${p.num||''}" placeholder="+27 00 000 0000" oninput="formPhones[${i}].num=this.value">
+      </div>
+    </div>
+    ${formPhones.length>1?`<button class="btn-remove" onclick="removePhone(${i})" aria-label="Remove phone"><i class="ti ti-x" aria-hidden="true"></i></button>`:''}
+  </div>`).join('');
+  const eRows=formEmails.map((e,i)=>`<div class="phone-row" id="emailRow${i}">
+    <div class="form-field">
+      <label>Email address</label>
+      <div class="input-icon-wrap"><i class="ti ti-mail fi" aria-hidden="true"></i>
+        <input type="email" value="${e.addr||''}" placeholder="name@example.com" oninput="formEmails[${i}].addr=this.value">
+      </div>
+    </div>
+    ${formEmails.length>1?`<button class="btn-remove" onclick="removeEmail(${i})" aria-label="Remove email"><i class="ti ti-x" aria-hidden="true"></i></button>`:''}
+  </div>`).join('');
+  const photoSrc=photoDraft?`<img src="${photoDraft}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`:`<i class="ti ti-camera camera-icon" aria-hidden="true"></i>`;
+  document.getElementById('modalBox').innerHTML=`
+  <div>
+    <div class="modal-header">
+      <h2>${title}</h2>
+      <button class="modal-close" onclick="closeModal()" aria-label="Close"><i class="ti ti-x" aria-hidden="true"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="photo-upload-area">
+        <div class="photo-circle" onclick="document.getElementById('photoFileInput').click()" role="button" aria-label="Upload photo" tabindex="0">
+          ${photoSrc}
+        </div>
+        <input type="file" id="photoFileInput" accept="image/*" style="display:none" onchange="handlePhotoUpload(event)">
+        <div class="photo-label">${photoDraft?'Tap to change photo':'Tap to add photo'}</div>
+      </div>
+      <div class="form-section">
+        <div class="form-section-title"><i class="ti ti-user" aria-hidden="true"></i> Basic info</div>
+        <div class="form-row">
+          <div class="form-field"><label>First name</label><input type="text" id="fFirst" value="${c?c.name.split(' ')[0]:''}" placeholder="First name"></div>
+          <div class="form-field"><label>Last name</label><input type="text" id="fLast" value="${c?c.name.split(' ').slice(1).join(' '):''}" placeholder="Last name"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-field"><label>Job title</label><input type="text" id="fRole" value="${c?c.role||'':''}" placeholder="e.g. Designer"></div>
+          <div class="form-field"><label>Company</label><input type="text" id="fCompany" value="${c?c.company||'':''}" placeholder="e.g. Acme Inc."></div>
+        </div>
+      </div>
+      <div class="form-section">
+        <div class="form-section-title"><i class="ti ti-phone" aria-hidden="true"></i> Phone</div>
+        <div id="phoneRows">${pRows}</div>
+        <button class="btn-add-field" onclick="addPhone()"><i class="ti ti-plus" aria-hidden="true"></i> Add phone</button>
+      </div>
+      <div class="form-section" style="margin-top:16px">
+        <div class="form-section-title"><i class="ti ti-mail" aria-hidden="true"></i> Email</div>
+        <div id="emailRows">${eRows}</div>
+        <button class="btn-add-field" onclick="addEmail()"><i class="ti ti-plus" aria-hidden="true"></i> Add email</button>
+      </div>
+      <div class="form-section" style="margin-top:16px">
+        <div class="form-section-title"><i class="ti ti-info-circle" aria-hidden="true"></i> More details</div>
+        <div class="form-field"><label>Birthday</label><input type="date" id="fBirthday" value="${c?c.birthday||'':''}"></div>
+        <div class="form-field"><label>Notes</label><textarea id="fNotes" placeholder="Add a note…">${c?c.notes||'':''}</textarea></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-save" onclick="saveContact()"><i class="ti ti-device-floppy" aria-hidden="true"></i> Save contact</button>
+    </div>
+  </div>`;
+  document.getElementById('modal').style.display='flex';
+}
+
+function handlePhotoUpload(e){
+  const file=e.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=ev=>{photoDraft=ev.target.result;buildFormModal(editingId?contacts.find(c=>c.id===editingId):null);};
+  reader.readAsDataURL(file);
+}
+
+function addPhone(){formPhones.push({type:'mobile',num:''});rebuildPhoneRows();}
+function removePhone(i){formPhones.splice(i,1);rebuildPhoneRows();}
+function addEmail(){formEmails.push({addr:''});rebuildEmailRows();}
+function removeEmail(i){formEmails.splice(i,1);rebuildEmailRows();}
+
+function rebuildPhoneRows(){
+  document.getElementById('phoneRows').innerHTML=formPhones.map((p,i)=>`<div class="phone-row">
+    <div class="form-field" style="flex:0 0 90px">
+      <label>Type</label>
+      <select onchange="formPhones[${i}].type=this.value" style="padding:10px 8px">
+        ${['mobile','home','work','other'].map(t=>`<option${p.type===t?' selected':''}>${t}</option>`).join('')}
+      </select>
+    </div>
+    <div class="form-field">
+      <label>Number</label>
+      <div class="input-icon-wrap"><i class="ti ti-phone fi" aria-hidden="true"></i>
+        <input type="tel" value="${p.num||''}" placeholder="+27 00 000 0000" oninput="formPhones[${i}].num=this.value">
+      </div>
+    </div>
+    ${formPhones.length>1?`<button class="btn-remove" onclick="removePhone(${i})" aria-label="Remove"><i class="ti ti-x" aria-hidden="true"></i></button>`:''}
+  </div>`).join('');
+}
+function rebuildEmailRows(){
+  document.getElementById('emailRows').innerHTML=formEmails.map((e,i)=>`<div class="phone-row">
+    <div class="form-field">
+      <label>Email address</label>
+      <div class="input-icon-wrap"><i class="ti ti-mail fi" aria-hidden="true"></i>
+        <input type="email" value="${e.addr||''}" placeholder="name@example.com" oninput="formEmails[${i}].addr=this.value">
+      </div>
+    </div>
+    ${formEmails.length>1?`<button class="btn-remove" onclick="removeEmail(${i})" aria-label="Remove"><i class="ti ti-x" aria-hidden="true"></i></button>`:''}
+  </div>`).join('');
+}
+
+function saveContact(){
+  const first=(document.getElementById('fFirst').value||'').trim();
+  const last=(document.getElementById('fLast').value||'').trim();
+  const name=[first,last].filter(Boolean).join(' ');
+  if(!name){alert('Please enter a name.');return;}
+  const data={
+    name,
+    role:(document.getElementById('fRole').value||'').trim(),
+    company:(document.getElementById('fCompany').value||'').trim(),
+    phones:formPhones.filter(p=>p.num.trim()),
+    emails:formEmails.filter(e=>e.addr.trim()),
+    birthday:(document.getElementById('fBirthday').value||'').trim(),
+    notes:(document.getElementById('fNotes').value||'').trim(),
+    photo:photoDraft,
+  };
+  if(editingId){
+    const c=contacts.find(x=>x.id===editingId);
+    if(c)Object.assign(c,data);
+  } else {
+    contacts.push({id:++nextId,fav:false,...data});
+  }
+  closeModal();renderTabs();renderContacts();
+}
+
+function closeModal(){
+  document.getElementById('modal').style.display='none';
+  document.getElementById('modalBox').innerHTML='';
+  editingId=null;photoDraft='';
+}
+
+renderTabs();renderContacts();
 </script>
-</body>
-</html>
